@@ -6,9 +6,10 @@
 /*   By: imeziane <imeziane@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/03 19:35:45 by imeziane          #+#    #+#             */
-/*   Updated: 2026/09/10 13:09:38 by imeziane         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:50:36 by imeziane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "philo.h"
 
 static void	one_philo_routine(t_philo *philo)
@@ -44,18 +45,18 @@ static void	pick_forks(t_philo *philo)
 		pthread_mutex_unlock(&philo->data->forks[0]);
 		return ;
 	}
-	if (philo->id % 2)
+	if (philo->left_fork < philo->right_fork)
 	{
-		pthread_mutex_lock(philo->right_fork);
-		print_state(philo, "has taken a fork");
 		pthread_mutex_lock(philo->left_fork);
+		print_state(philo, "has taken a fork");
+		pthread_mutex_lock(philo->right_fork);
 		print_state(philo, "has taken a fork");
 	}
 	else
 	{
-		pthread_mutex_lock(philo->left_fork);
-		print_state(philo, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
+		print_state(philo, "has taken a fork");
+		pthread_mutex_lock(philo->left_fork);
 		print_state(philo, "has taken a fork");
 	}
 }
@@ -86,8 +87,8 @@ void	*routine(void *arg)
 		one_philo_routine(philo);
 		return (NULL);
 	}
-	if (philo->id % 2)
-		usleep(1000);
+	usleep((philo->id - 1) * (philo->data->time_to_eat
+			+ philo->data->time_to_sleep) * 1000 / philo->data->nb_philo);
 	while (!sim_should_stop(philo))
 	{
 		pick_forks(philo);
