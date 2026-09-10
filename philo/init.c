@@ -9,7 +9,6 @@
 /*   Updated: 2026/09/10 12:44:38 by imeziane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "philo.h"
 
 void	init_data(t_all *data)
@@ -21,6 +20,7 @@ void	init_data(t_all *data)
 	data->time_must_eat = 0;
 	data->start_time = 0;
 	data->end = 0;
+	data->start = 0;
 	data->forks = NULL;
 	data->philo = NULL;
 	if (data->ac == 6)
@@ -43,11 +43,18 @@ int	init_mutexes(t_all *data)
 		pthread_mutex_destroy(&data->print_mutex);
 		return (1);
 	}
+	if (pthread_mutex_init(&data->start_mutex, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->print_mutex);
+		pthread_mutex_destroy(&data->end_mutex);
+		return (1);
+	}
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 	{
 		pthread_mutex_destroy(&data->print_mutex);
 		pthread_mutex_destroy(&data->end_mutex);
+		pthread_mutex_destroy(&data->start_mutex);
 		return (1);
 	}
 	i = 0;
@@ -60,6 +67,7 @@ int	init_mutexes(t_all *data)
 			free(data->forks);
 			pthread_mutex_destroy(&data->print_mutex);
 			pthread_mutex_destroy(&data->end_mutex);
+			pthread_mutex_destroy(&data->start_mutex);
 			return (1);
 		}
 		i++;
@@ -117,4 +125,5 @@ void	destroy_data(t_all *data)
 	free(data->forks);
 	pthread_mutex_destroy(&data->print_mutex);
 	pthread_mutex_destroy(&data->end_mutex);
+	pthread_mutex_destroy(&data->start_mutex);
 }

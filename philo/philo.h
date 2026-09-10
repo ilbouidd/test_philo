@@ -47,6 +47,7 @@ typedef struct s_all
 	int				time_must_eat;
 	int				meal_limit;
 	int				end;
+	int				start;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	start_mutex;
 	pthread_mutex_t	end_mutex;

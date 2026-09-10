@@ -117,6 +117,9 @@ int	main(int argc, char *argv[])
 		}
 		i++;
 	}
+	pthread_mutex_lock(&data.start_mutex);
+	data.start = 1;
+	pthread_mutex_unlock(&data.start_mutex);
 	pthread_create(&monitor_thread, NULL, monitor, &data);
 	i = 0;
 	while (i < data.nb_philo)

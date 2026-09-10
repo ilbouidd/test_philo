@@ -9,7 +9,6 @@
 /*   Updated: 2026/09/10 13:09:38 by imeziane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "philo.h"
 
 static void	one_philo_routine(t_philo *philo)
@@ -40,6 +39,7 @@ static void	pick_forks(t_philo *philo)
 		pthread_mutex_lock(&philo->data->forks[0]);
 		print_state(&philo->data->philo[0], "has taken a fork");
 		precise_sleep(philo->data->time_to_die, philo->data);
+		print_state(&philo->data->philo[0], "died");
 		stop_simulation(philo->data);
 		pthread_mutex_unlock(&philo->data->forks[0]);
 		return ;
@@ -93,6 +93,8 @@ void	*routine(void *arg)
 		pick_forks(philo);
 		eat_phase(philo);
 		release_forks(philo);
+		if (philo_reached_limit(philo))
+			break ;
 		sleep_and_think(philo);
 	}
 	return (NULL);
